@@ -24,7 +24,7 @@ println(s"isSorted(1,2,3) by less than: ${isSorted(List(1, 2, 3), _ < _)}")
 
 val isGreater: (Int, Int) => Boolean = _ > _
 
-println(s"3 is greater than 2?, ${isGreater(3, 2)}")
+println(s"3 is greater than 2? ${isGreater(3, 2)}")
 
 // note the results here are different from the book.
 // IMO the results given in the book, for example `isSorted(Array(1, 2, 3), _ > _)`
@@ -40,3 +40,19 @@ def isSorted2[A](as: Array[A], ordered: (A,A) => Boolean) : Boolean = {
 		else false
 	loop(0)
 }
+
+// exercise 2.3
+def partial1[A, B, C](f: (A, B) => C, b: B): A => C = (a: A) => f(a, b)
+val greaterThan3: (x: Int) => Boolean = partial1(isGreater, 3)
+println(s"5 > 3? ${greaterThan3(5)}")
+
+def curry[A, B, C](f: (A, B) => C): A => B => C = a => b => f(a, b)
+val isGreaterCurried = curry(isGreater)
+val lessThan3: (x: Int) => Boolean = isGreaterCurried(3)  // the subject is the 1st paramter of function isGreater, the object is the 2nd parameter, so the comparison direction is reversed.
+println(s"2 < 3? ${lessThan3(2)}")
+
+// exercise 2.4
+def uncurry[A, B, C](f: A => B => C): (A, B) => C = (x: A, y: B) => f(x)(y)
+
+// exercise 2.5
+def compose[A, B, C](f: B => C, g: A => B): A => C = a => f(g(a))
